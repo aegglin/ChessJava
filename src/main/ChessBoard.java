@@ -36,7 +36,6 @@ public class ChessBoard {
                 darkSquareColor = new Color(167, 199, 231);
                 break;
         }
-        loadImages();
     }
 
     public void draw(Graphics g2) {
@@ -65,60 +64,8 @@ public class ChessBoard {
                 // x, y, width, height
                 g2.fillRect(c * SQUARE_SIZE, r * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 
-                BufferedImage pieceImage = null;
-                if (r == 0) {
-                    if (c == 0 || c == NUM_COLS - 1) {
-                        pieceImage = blackRook;
-                    } else if (c == 1 || c == NUM_COLS - 2) {
-                        pieceImage = blackKnight;
-                    } else if (c == 2 || c == NUM_COLS - 3) {
-                        pieceImage = blackBishop;
-                    } else if (c == 3) {
-                        pieceImage = blackQueen;
-                    } else if (c == 4) {
-                        pieceImage = blackKing;
-                    }
-                    g2.drawImage(pieceImage, c * SQUARE_SIZE, r, null);
-                } else {
-                    if (r == 1) {
-                        pieceImage = blackPawn;
-                    } else if (r == NUM_ROWS - 2) {
-                        pieceImage = whitePawn;
-                    } else if (r == NUM_ROWS - 1) {
-                        if (c == 0 || c == NUM_COLS - 1) {
-                            pieceImage = whiteRook;
-                        } else if (c == 1 || c == NUM_COLS - 2) {
-                            pieceImage = whiteKnight;
-                        } else if (c == 2 || c == NUM_COLS - 3) {
-                            pieceImage = whiteBishop;
-                        } else if (c == 3) {
-                            pieceImage = whiteQueen;
-                        } else if (c == 4) {
-                            pieceImage = whiteKing;
-                        }
-                    }
-                    g2.drawImage(pieceImage, c * SQUARE_SIZE, r * SQUARE_SIZE, null);
-                }
-            }
-        }
-    }
 
-    private void loadImages() {
-        try {
-            blackBishop = ImageIO.read(getClass().getResourceAsStream("/pieces/blackBishop.png"));
-            blackKing = ImageIO.read(getClass().getResourceAsStream("/pieces/blackKing.png"));
-            blackKnight = ImageIO.read(getClass().getResourceAsStream("/pieces/blackKnight.png"));
-            blackPawn = ImageIO.read(getClass().getResourceAsStream("/pieces/blackPawn.png"));
-            blackQueen = ImageIO.read(getClass().getResourceAsStream("/pieces/blackQueen.png"));
-            blackRook = ImageIO.read(getClass().getResourceAsStream("/pieces/blackRook.png"));
-            whiteBishop = ImageIO.read(getClass().getResourceAsStream("/pieces/whiteBishop.png"));
-            whiteKing = ImageIO.read(getClass().getResourceAsStream("/pieces/whiteKing.png"));
-            whiteKnight = ImageIO.read(getClass().getResourceAsStream("/pieces/whiteKnight.png"));
-            whitePawn = ImageIO.read(getClass().getResourceAsStream("/pieces/whitePawn.png"));
-            whiteQueen = ImageIO.read(getClass().getResourceAsStream("/pieces/whiteQueen.png"));
-            whiteRook = ImageIO.read(getClass().getResourceAsStream("/pieces/whiteRook.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
+            }
         }
     }
 }
