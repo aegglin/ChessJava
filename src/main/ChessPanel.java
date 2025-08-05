@@ -15,22 +15,29 @@ public class ChessPanel extends JPanel implements Runnable {
 
     public static final int WHITE = 0;
     public static final int BLACK = 1;
-    public int currentPlayer;
+    public int currentPlayerColor;
 
     public ArrayList<Piece> pieces;
-    public ArrayList<Piece> prevPieces;
+    public ArrayList<Piece> simPieces;
+
+    private MouseHandler mouseHandler;
+    private Piece activePiece;
 
     public ChessPanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(Color.BLACK);
         chessBoard = new ChessBoard();
-        currentPlayer = WHITE;
+        currentPlayerColor = WHITE;
 
         pieces = new ArrayList<>();
-        prevPieces = new ArrayList<>();
+        simPieces = new ArrayList<>();
 
         setPieces();
-        copyPieces(pieces, prevPieces);
+        copyPieces(pieces, simPieces);
+
+        mouseHandler = new MouseHandler();
+        addMouseMotionListener(mouseHandler);
+        addMouseListener(mouseHandler);
     }
 
     private void copyPieces(ArrayList<Piece> source, ArrayList<Piece> target) {
@@ -82,7 +89,29 @@ public class ChessPanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        if (mouseHandler.isMousePressed) {
+            // player is not holding a piece
+            if (activePiece == null) {
+                for (Piece piece: simPieces) {
+                    if (piece.color == currentPlayerColor &&
+                            piece.currentCol == mouseHandler.x / ChessBoard.SQUARE_SIZE &&
+                            piece.currentRow == mouseHandler.y / ChessBoard.SQUARE_SIZE) {
+                        activePiece = piece;
+                    }
+                }
+            }
+            // player is already holding a piece
+            else {
+                simulate();
+            }
+        }
+    }
 
+    private void simulate() {
+        activePiece.x = mouseHandler.x - ChessBoard.HALF_SQUARE_SIZE;
+        activePiece.y = mouseHandler.y - ChessBoard.HALF_SQUARE_SIZE;
+        activePiece.currentRow = activePiece.getCurrentRow(activePiece.y);
+        activePiece.currentCol = activePiece.getCurrentCol(activePiece.x);
     }
 
     public void paintComponent(Graphics g) {
@@ -90,8 +119,16 @@ public class ChessPanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D)g;
         chessBoard.draw(g2);
 
-        for (Piece p: pieces) {
+        for (Piece p: simPieces) {
             p.draw(g2);
+        }
+
+        if (activePiece != null) {
+            g2.setColor(Color.white);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+            g2.fillRect(activePiece.currentCol * ChessBoard.SQUARE_SIZE, activePiece.currentRow * ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE, ChessBoard.SQUARE_SIZE);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+            activePiece.draw(g2);
         }
     }
 

@@ -20,8 +20,8 @@ public class Piece {
         this.currentCol = currentCol;
         this.currentRow = currentRow;
 
-        this.x = getX();
-        this.y = getY();
+        this.x = getX(currentCol);
+        this.y = getY(currentRow);
 
         this.previousCol = currentCol;
         this.previousRow = currentRow;
@@ -30,17 +30,17 @@ public class Piece {
         getImage();
     }
 
-    public int getX () {
-        return currentCol * ChessBoard.SQUARE_SIZE;
+    public int getX (int col) {
+        return col * ChessBoard.SQUARE_SIZE;
     }
 
-    public int getY () {
-        return currentRow * ChessBoard.SQUARE_SIZE;
+    public int getY (int row) {
+        return row * ChessBoard.SQUARE_SIZE;
     }
 
     public void getImage() {
         BufferedImage pieceImage = null;
-        String imagePath = "/res/pieces/";
+        String imagePath = "/pieces/";
         if (color == ChessPanel.WHITE) {
             imagePath += "White";
         } else {
@@ -50,14 +50,22 @@ public class Piece {
         imagePath += (name + ".png");
         try {
             pieceImage = ImageIO.read(getClass().getResourceAsStream(imagePath));
-        } catch (Exception e) {
-            System.err.printf("Couldn't find the image for %s at %s.\n", name, imagePath);
-//            e.printStackTrace();
+        } catch (IOException e) {
+            System.err.printf("IO Exception. Couldn't find the image for %s at %s.\n", name, imagePath);
+        } catch (IllegalArgumentException e) {
+            System.err.printf("Illegal Argument Exception. Couldn't find the image for %s at %s.\n", name, imagePath);
         }
         this.image = pieceImage;
     }
 
     public void draw(Graphics2D g2) {
-        g2.drawImage(image, getX(), getY(), null);
+        g2.drawImage(image, x, y, null);
+    }
+
+    public int getCurrentCol(int x) {
+        return (x + ChessBoard.HALF_SQUARE_SIZE) / ChessBoard.SQUARE_SIZE;
+    }
+    public int getCurrentRow(int y) {
+        return (y + ChessBoard.HALF_SQUARE_SIZE) / ChessBoard.SQUARE_SIZE;
     }
 }
